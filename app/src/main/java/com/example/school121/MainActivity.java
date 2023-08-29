@@ -17,25 +17,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     private WebView webView;
-    public void onBackPressed() {
-        if (webView != null && webView.canGoBack())
-            webView.goBack();
-        else showInfoAlert();
-    }
+    private String webUrl = "https://sch121.edusite.ru/";
+
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        WebView webView = findViewById(R.id.webView);
-        webView.loadUrl("https://sch121.edusite.ru/");
-
+        webView = findViewById(R.id.webView);
+        webView.loadUrl(webUrl);
         WebSettings webSettings = webView.getSettings();
         webView.getSettings().setJavaScriptEnabled(true);
-        WebViewClient webViewClient = new WebViewClient() {
-            @SuppressWarnings("deprecation")
+        webView.setWebViewClient(new WebViewClient());
+        new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -44,18 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
             @TargetApi(Build.VERSION_CODES.N)
             @Override
-
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-
                 view.loadUrl(request.getUrl().toString());
-
                 return true;
-
             }
         };
 
-
-        webView.setWebViewClient(webViewClient);
+        webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
@@ -63,17 +53,17 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().setDisplayZoomControls(false);
         webView.setInitialScale(100);
 
-
-
         webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(true);
         webView.setScrollBarFadeDuration(2000);
-
-
     }
 
-
-
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack())
+            webView.goBack();
+        else showInfoAlert();
+    }
 
     private void showInfoAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -81,6 +71,4 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-
 }
